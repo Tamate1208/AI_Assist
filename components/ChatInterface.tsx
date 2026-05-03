@@ -1,5 +1,7 @@
 
 import React, { useState, KeyboardEvent, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { ChatMessage } from '../types';
 
 interface ChatInterfaceProps {
@@ -84,12 +86,20 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
                   }`}>
                     <i className={`fa-solid ${msg.role === 'user' ? 'fa-user' : 'fa-robot'}`}></i>
                   </div>
-                  <div className={`p-3 sm:p-4 rounded-2xl shadow-sm text-sm leading-relaxed transition-all ${
+                  <div className={`p-3 sm:p-4 rounded-2xl shadow-sm leading-relaxed transition-all ${
                     msg.role === 'user' 
-                      ? 'bg-blue-600 text-white rounded-tr-none' 
-                      : 'bg-white border border-gray-200 text-gray-800 rounded-tl-none'
+                      ? 'bg-blue-600 text-white rounded-tr-none text-sm' 
+                      : 'bg-white border border-gray-200 text-gray-800 rounded-tl-none overflow-x-auto overflow-y-hidden'
                   }`}>
-                    <div className="whitespace-pre-wrap">{msg.content}</div>
+                    {msg.role === 'user' ? (
+                      <div className="whitespace-pre-wrap">{msg.content}</div>
+                    ) : (
+                      <div className="markdown-body">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {msg.content}
+                        </ReactMarkdown>
+                      </div>
+                    )}
                     <div className={`text-[9px] sm:text-[10px] mt-2 opacity-60 text-right ${msg.role === 'user' ? 'text-white' : 'text-gray-400'}`}>
                       {msg.timestamp.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' })}
                     </div>
