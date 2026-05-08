@@ -2,7 +2,7 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import { createServer as createViteServer } from "vite";
-import { GoogleGenAI, ThinkingLevel } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -46,16 +46,14 @@ async function startServer() {
       6. 言語: 常に丁寧な日本語で回答してください。そして、より人間らしい回答に努めてください。
     `;
 
-    const relevantHistory = history.slice(-6).map((msg: any) => ({
-      role: msg.role === 'user' ? 'user' : 'model',
-      parts: [{ text: msg.content }]
-    }));
-
     try {
       const result = await ai.models.generateContentStream({
-        model: "gemini-3-flash-preview",
+        model: "gemini-1.5-flash-latest",
         contents: [
-          ...relevantHistory,
+          ...history.slice(-6).map((msg: any) => ({
+            role: msg.role === 'user' ? 'user' : 'model',
+            parts: [{ text: msg.content }]
+          })),
           {
             role: 'user',
             parts: [
@@ -68,7 +66,6 @@ async function startServer() {
           systemInstruction,
           temperature: 1,
           topP: 0.95,
-          thinkingConfig: { thinkingLevel: ThinkingLevel.HIGH }
         }
       });
 
@@ -88,6 +85,11 @@ async function startServer() {
       res.status(500).write(JSON.stringify({ error: error.message }));
       res.end();
     }
+  });
+
+  // API Route: Health Check
+  app.get("/api/health", (req, res) => {
+    res.json({ status: "ok" });
   });
 
   // Vite middleware for development
