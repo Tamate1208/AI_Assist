@@ -38,7 +38,7 @@ export async function* askGeminiStream(
 
   try {
     const result = await ai.models.generateContentStream({
-      model: "gemini-3-flash-preview",
+      model: "gemini-1.5-flash-latest", // Use a widely available stable model for better reliability
       contents: [
         ...relevantHistory,
         {
@@ -70,6 +70,10 @@ export async function* askGeminiStream(
       errorMessage = "資料のページ数が上限（1000ページ）を超えています。資料を分割してアップロードするか、重要な箇所のみを抽出したファイルを使用してください。";
     } else if (error.message && error.message.includes("429")) {
       errorMessage = "リクエストが多すぎます。少し時間を置いてから再度お試しください。";
+    } else if (error.message && (error.message.includes("not found") || error.message.includes("404"))) {
+      errorMessage = "指定されたモデルが見つかりません。API設定を確認してください。";
+    } else if (error.message && error.message.includes("API key")) {
+      errorMessage = "APIキーが無効、または設定されていません。環境変数をご確認ください。";
     }
     
     throw new Error(errorMessage);
