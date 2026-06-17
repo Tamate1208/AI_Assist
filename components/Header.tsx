@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 
 interface HeaderProps {
   onToggleSidebar: () => void;
+  selectedModel: string;
+  onModelChange: (model: string) => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
+const Header: React.FC<HeaderProps> = ({ onToggleSidebar, selectedModel, onModelChange }) => {
   const [status, setStatus] = useState<'loading' | 'online' | 'error'>('loading');
 
   useEffect(() => {
@@ -13,10 +15,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
         const response = await fetch('/api/health');
         const data = await response.json();
         
-        // Also check if Gemini API key is available in the environment
-        const hasApiKey = !!process.env.GEMINI_API_KEY;
-        
-        if (data.status === 'ok' && hasApiKey) {
+        if (data.status === 'ok' && data.hasApiKey) {
           setStatus('online');
         } else {
           setStatus('error');
@@ -51,6 +50,25 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar }) => {
       </div>
       
       <div className="flex items-center gap-3">
+        {/* Model Selector */}
+        <div className="flex items-center gap-1.5 md:gap-2">
+          <label htmlFor="model-select" className="text-xs font-semibold text-gray-500 hidden md:block">
+            モデル:
+          </label>
+          <select
+            id="model-select"
+            value={selectedModel}
+            onChange={(e) => onModelChange(e.target.value)}
+            className="text-xs bg-gray-50 border border-gray-200 hover:border-gray-300 rounded px-2 py-1.5 font-medium text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 cursor-pointer transition-colors duration-150"
+          >
+            <option value="gemini-3.5-flash">Gemini 3.5 Flash</option>
+            <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+            <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
+            <option value="gemini-1.5-flash-latest">Gemini 1.5 Flash</option>
+            <option value="gemini-1.5-pro-latest">Gemini 1.5 Pro</option>
+          </select>
+        </div>
+
         <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium border ${
           status === 'online' 
             ? 'bg-emerald-50 text-emerald-700 border-emerald-100' 

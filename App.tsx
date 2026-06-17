@@ -11,6 +11,7 @@ interface ExtendedAppState extends AppState {
 }
 
 const App: React.FC = () => {
+  const [selectedModel, setSelectedModel] = useState<string>('gemini-3.5-flash');
   const [state, setState] = useState<ExtendedAppState>({
     files: [],
     messages: [],
@@ -103,7 +104,7 @@ const App: React.FC = () => {
 
     let fullContent = '';
     try {
-      const stream = askGeminiStream(content, state.files, state.messages);
+      const stream = askGeminiStream(content, state.files, state.messages, selectedModel);
       
       for await (const chunk of stream) {
         fullContent += chunk;
@@ -137,7 +138,11 @@ const App: React.FC = () => {
 
   return (
     <div className="flex flex-col h-screen overflow-hidden font-sans bg-gray-50">
-      <Header onToggleSidebar={toggleSidebar} />
+      <Header 
+        onToggleSidebar={toggleSidebar} 
+        selectedModel={selectedModel}
+        onModelChange={setSelectedModel}
+      />
       
       <div className="flex flex-1 overflow-hidden relative">
         {/* Mobile Backdrop */}
