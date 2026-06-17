@@ -64,8 +64,6 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar, selectedModel, onModel
             <option value="gemini-3.5-flash">Gemini 3.5 Flash</option>
             <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
             <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
-            <option value="gemini-1.5-flash-latest">Gemini 1.5 Flash</option>
-            <option value="gemini-1.5-pro-latest">Gemini 1.5 Pro</option>
           </select>
         </div>
 
