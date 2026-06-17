@@ -11,7 +11,7 @@ interface ExtendedAppState extends AppState {
 }
 
 const App: React.FC = () => {
-  const [selectedModel, setSelectedModel] = useState<string>('gemini-2.5-flash');
+  const [selectedModel, setSelectedModel] = useState<string>('gemini-3.5-flash');
   const [state, setState] = useState<ExtendedAppState>({
     files: [],
     messages: [],
