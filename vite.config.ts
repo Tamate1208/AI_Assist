@@ -4,9 +4,6 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig(({ mode }) => {
-    const env = loadEnv(mode, '.', '');
-    const apiKey = env.GEMINI_API_KEY || '';
-    
     return {
       base: './',
       server: {
@@ -14,9 +11,6 @@ export default defineConfig(({ mode }) => {
         host: '0.0.0.0',
       },
       plugins: [react(), tailwindcss()],
-      define: {
-        'process.env.GEMINI_API_KEY': JSON.stringify(apiKey)
-      },
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),

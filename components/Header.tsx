@@ -61,7 +61,6 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar, selectedModel, onModel
             onChange={(e) => onModelChange(e.target.value)}
             className="text-xs bg-gray-50 border border-gray-200 hover:border-gray-300 rounded px-2 py-1.5 font-medium text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 cursor-pointer transition-colors duration-150"
           >
-            <option value="gemini-3.5-flash">Gemini 3.5 Flash</option>
             <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
             <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
             <option value="gemini-1.5-flash-latest">Gemini 1.5 Flash</option>

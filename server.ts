@@ -6,7 +6,7 @@ import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 
 // Load environment variables
-dotenv.config();
+dotenv.config({ path: ['.env.local', '.env'] });
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -64,7 +64,7 @@ async function startServer() {
         parts: [{ text: msg.content }]
       }));
 
-      const targetModel = model || "gemini-3.5-flash";
+      const targetModel = model || "gemini-2.5-flash";
 
       const result = await ai.models.generateContentStream({
         model: targetModel,
