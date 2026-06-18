@@ -1,10 +1,10 @@
-
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { FileItem, ChatMessage, AppState } from './types';
 import Sidebar from './components/Sidebar';
 import ChatInterface from './components/ChatInterface';
 import Header from './components/Header';
 import { askGeminiStream } from './services/geminiService';
+import Login from './components/Login';
 
 interface ExtendedAppState extends AppState {
   isFileLoading: boolean;
@@ -19,6 +19,44 @@ const App: React.FC = () => {
     isSidebarOpen: true,
     isFileLoading: false
   });
+
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState<boolean>(true);
+
+  useEffect(() => {
+    const checkSavedPassword = async () => {
+      const savedPassword = localStorage.getItem("app_password") || "";
+      try {
+        const response = await fetch('/api/auth', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ password: savedPassword }),
+        });
+        
+        if (response.ok) {
+          setIsAuthenticated(true);
+          if (savedPassword) {
+            localStorage.setItem("app_password", savedPassword);
+          }
+        } else {
+          localStorage.removeItem("app_password");
+          setIsAuthenticated(false);
+        }
+      } catch (err) {
+        if (savedPassword) {
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+        }
+      } finally {
+        setIsCheckingAuth(false);
+      }
+    };
+
+    checkSavedPassword();
+  }, []);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -119,14 +157,24 @@ const App: React.FC = () => {
 
       setState(prev => ({ ...prev, isProcessing: false }));
     } catch (error) {
-      const errorMessage = `Error: ${error instanceof Error ? error.message : "Something went wrong."}`;
-      setState(prev => ({
-        ...prev,
-        isProcessing: false,
-        messages: prev.messages.map(msg => 
-          msg.id === aiMessageId ? { ...msg, content: errorMessage } : msg
-        )
-      }));
+      if (error instanceof Error && error.message === "UNAUTHORIZED") {
+        localStorage.removeItem("app_password");
+        setIsAuthenticated(false);
+        setState(prev => ({
+          ...prev,
+          isProcessing: false,
+          messages: prev.messages.filter(msg => msg.id !== userMessage.id && msg.id !== aiMessageId)
+        }));
+      } else {
+        const errorMessage = `Error: ${error instanceof Error ? error.message : "Something went wrong."}`;
+        setState(prev => ({
+          ...prev,
+          isProcessing: false,
+          messages: prev.messages.map(msg => 
+            msg.id === aiMessageId ? { ...msg, content: errorMessage } : msg
+          )
+        }));
+      }
     } finally {
       setTimeout(scrollToBottom, 50);
     }
@@ -135,6 +183,26 @@ const App: React.FC = () => {
   const toggleSidebar = () => {
     setState(prev => ({ ...prev, isSidebarOpen: !prev.isSidebarOpen }));
   };
+
+  if (isCheckingAuth) {
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950 font-sans">
+        <div className="w-10 h-10 border-4 border-blue-500/80 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p className="text-slate-400 text-sm">読み込み中...</p>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <Login 
+        onSuccess={(password) => {
+          localStorage.setItem("app_password", password);
+          setIsAuthenticated(true);
+        }} 
+      />
+    );
+  }
 
   return (
     <div className="flex flex-col h-screen overflow-hidden font-sans bg-gray-50">
@@ -148,7 +216,7 @@ const App: React.FC = () => {
         {/* Mobile Backdrop */}
         {state.isSidebarOpen && (
           <div 
-            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-20 md:hidden animate-fade-in"
+          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-20 md:hidden animate-fade-in"
             onClick={toggleSidebar}
           />
         )}

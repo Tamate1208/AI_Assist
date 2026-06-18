@@ -17,6 +17,35 @@ async function startServer() {
 
   app.use(express.json({ limit: '50mb' }));
 
+  const authMiddleware = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const expectedPassword = process.env.APP_PASSWORD;
+    if (!expectedPassword) {
+      return next();
+    }
+
+    const authHeader = req.headers['authorization'];
+    const clientPassword = authHeader && authHeader.startsWith('Bearer ') 
+      ? authHeader.slice(7) 
+      : (req.headers['x-app-password'] as string);
+
+    if (clientPassword === expectedPassword) {
+      return next();
+    }
+
+    return res.status(401).json({ error: "認証されていません。" });
+  };
+
+  // API Route: Authentication
+  app.post("/api/auth", (req, res) => {
+    const { password } = req.body;
+    const expectedPassword = process.env.APP_PASSWORD;
+
+    if (!expectedPassword || password === expectedPassword) {
+      return res.json({ status: "ok" });
+    }
+    return res.status(401).json({ error: "パスワードが正しくありません。" });
+  });
+
   // API Route: Health Check
   app.get("/api/health", (req, res) => {
     res.json({ 
@@ -26,7 +55,7 @@ async function startServer() {
   });
 
   // API Route: Gemini Proxy
-  app.post("/api/chat", async (req, res) => {
+  app.post("/api/chat", authMiddleware, async (req, res) => {
     const { prompt, files, history, model } = req.body;
     const apiKey = process.env.GEMINI_API_KEY;
 

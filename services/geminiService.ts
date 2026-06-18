@@ -8,10 +8,12 @@ export async function* askGeminiStream(
   model?: string
 ) {
   try {
+    const password = localStorage.getItem("app_password") || "";
     const response = await fetch("/api/chat", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${password}`,
       },
       body: JSON.stringify({
         prompt,
@@ -22,6 +24,9 @@ export async function* askGeminiStream(
     });
 
     if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error("UNAUTHORIZED");
+      }
       const errorData = await response.json().catch(() => ({ error: "サーバーとの通信中にエラーが発生しました。" }));
       throw new Error(errorData.error || "サーバーとの通信中にエラーが発生しました。");
     }
