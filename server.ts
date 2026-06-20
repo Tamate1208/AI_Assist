@@ -56,7 +56,7 @@ async function startServer() {
 
   // API Route: Gemini Proxy
   app.post("/api/chat", authMiddleware, async (req, res) => {
-    const { prompt, files, history, model } = req.body;
+    const { prompt, files, history, model, systemInstruction: clientSystemInstruction } = req.body;
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
@@ -74,7 +74,7 @@ async function startServer() {
         }
       }));
 
-      const systemInstruction = `
+      const defaultSystemInstruction = `
         あなたは「AIアシスタント」として、高度な専門知識を持つアシスタントの役割を担います。
         特に、土木建築技術に対して深い造詣をもち、専門的な視点からアドバイスや解説を行うことができます。
         
@@ -87,6 +87,8 @@ async function startServer() {
         5. 構成: 専門用語は分かりやすく解説し、Markdown形式（表、箇条書き、太字など）を積極的に活用して構造的で読みやすい回答を作成してください。
         6. 言語: 常に丁寧な日本語で回答してください。そして、より人間らしい回答に努めてください。
       `;
+
+      const systemInstruction = clientSystemInstruction || defaultSystemInstruction;
 
       const relevantHistory = (history || []).slice(-6).map((msg: any) => ({
         role: msg.role === 'user' ? 'user' : 'model',

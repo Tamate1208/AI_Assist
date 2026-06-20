@@ -22,3 +22,6 @@ export interface AppState {
   isProcessing: boolean;
   isSidebarOpen: boolean;
 }
+
+export type PersonalityType = 'default' | 'friendly' | 'tutor' | 'kansai' | 'custom';
+

@@ -5,7 +5,8 @@ export async function* askGeminiStream(
   prompt: string,
   files: FileItem[],
   history: ChatMessage[],
-  model?: string
+  model?: string,
+  systemInstruction?: string
 ) {
   try {
     const password = localStorage.getItem("app_password") || "";
@@ -20,6 +21,7 @@ export async function* askGeminiStream(
         files,
         history,
         model,
+        systemInstruction,
       }),
     });
 
