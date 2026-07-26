@@ -60,26 +60,33 @@ const Sidebar: React.FC<SidebarProps> = ({
   }, []);
 
   const getFileTextContent = (file: FileItem): string => {
-    if (!file.data) return file.name;
+    // PDF・画像はバイナリなので直接読み上げ不可
+    if (file.type.includes('pdf')) {
+      return `PDFファイル「${file.name}」は直接読み上げできません。チャットでAIに内容を要約させてから、その回答を読み上げてください。`;
+    }
+    if (file.type.includes('image')) {
+      return `画像ファイル「${file.name}」は読み上げできません。`;
+    }
+
+    // テキスト系ファイルはbase64デコードして取得
+    if (!file.data) return `ファイル「${file.name}」の内容を取得できませんでした。`;
     try {
       if (file.data.startsWith('data:')) {
         const base64Parts = file.data.split(',');
         if (base64Parts.length > 1) {
-          const base64Content = base64Parts[1];
-          const binaryString = atob(base64Content);
-          const bytes = new Uint8Array(binaryString.length);
-          for (let i = 0; i < binaryString.length; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
-          }
-          const decoded = new TextDecoder('utf-8').decode(bytes);
-          if (decoded && decoded.trim().length > 0) {
+          const decoded = new TextDecoder('utf-8').decode(
+            Uint8Array.from(atob(base64Parts[1]), c => c.charCodeAt(0))
+          );
+          // 読み取ったテキストが意味のある内容かチェック（制御文字が多ければバイナリと判断）
+          const printableRatio = (decoded.match(/[\x20-\x7E\u3000-\u9FFF\uFF00-\uFFEF]/g) || []).length / Math.max(decoded.length, 1);
+          if (printableRatio > 0.7 && decoded.trim().length > 0) {
             return decoded;
           }
         }
       }
-      return file.name;
+      return `ファイル「${file.name}」のテキスト内容を読み取れませんでした。`;
     } catch (e) {
-      return file.name;
+      return `ファイル「${file.name}」の読み込み中にエラーが発生しました。`;
     }
   };
 
