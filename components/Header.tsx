@@ -42,10 +42,15 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar, selectedModel, onModel
           <i className="fa-solid fa-bars text-xl"></i>
         </button>
         <div className="flex items-center gap-2">
-          <div className="bg-blue-600 w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
-            <i className="fa-solid fa-robot text-white text-lg"></i>
+          <div className="bg-gradient-to-tr from-blue-700 to-indigo-700 w-8 h-8 rounded-lg flex items-center justify-center shrink-0 shadow-sm shadow-blue-500/20">
+            <i className="fa-solid fa-shield-halved text-white text-base"></i>
           </div>
-          <h1 className="text-lg sm:text-xl font-bold text-gray-700 tracking-tight truncate">AIアシスタント</h1>
+          <div className="flex items-baseline gap-2">
+            <h1 className="text-base sm:text-lg font-bold text-gray-800 tracking-tight truncate">AI設計照査アシスタント</h1>
+            <span className="hidden lg:inline-block text-[10px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-full">
+              発注者支援・不適正予防
+            </span>
+          </div>
         </div>
       </div>
       
@@ -61,9 +66,15 @@ const Header: React.FC<HeaderProps> = ({ onToggleSidebar, selectedModel, onModel
             onChange={(e) => onModelChange(e.target.value)}
             className="text-xs bg-gray-50 border border-gray-200 hover:border-gray-300 rounded px-2 py-1.5 font-medium text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 cursor-pointer transition-colors duration-150"
           >
-            <option value="gemini-3.5-flash">Gemini 3.5 Flash</option>
-            <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
-            <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
+            <optgroup label="⚡ 標準・節約（デフォルト）">
+              <option value="gemini-3.5-flash">Gemini 3.5 Flash 【超低コスト・高速】日常要約・簡易チェック 💰</option>
+            </optgroup>
+            <optgroup label="🚀 高度推論・最高コスパ（本格照査に推奨）">
+              <option value="gemini-3.8-flash">Gemini 3.8 Flash 【最高コスパ・推奨】図面/計算書クロスチェック 💰💰</option>
+            </optgroup>
+            <optgroup label="🧠 深層推論（高難度・最終確認）">
+              <option value="gemini-3.5-pro">Gemini 3.5 Pro 【深層推論】高難度特殊構造・示方書精査 💰💰💰💰</option>
+            </optgroup>
           </select>
         </div>
 

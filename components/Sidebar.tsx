@@ -98,7 +98,11 @@ const Sidebar: React.FC<SidebarProps> = ({
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
-  const getIcon = (type: string) => {
+  const getIcon = (type: string, name?: string) => {
+    const lowerName = (name || '').toLowerCase();
+    if (lowerName.endsWith('.xlsx') || lowerName.endsWith('.xls') || lowerName.endsWith('.csv')) {
+      return <i className="fa-solid fa-file-excel text-emerald-600"></i>;
+    }
     if (type.includes('pdf')) return <i className="fa-solid fa-file-pdf text-red-500"></i>;
     if (type.includes('image')) return <i className="fa-solid fa-file-image text-green-500"></i>;
     if (type.includes('text') || type.includes('plain')) return <i className="fa-solid fa-file-lines text-blue-500"></i>;
@@ -181,7 +185,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             className="hidden" 
             multiple 
             onChange={onUpload}
-            accept=".pdf,image/*,text/*"
+            accept=".pdf,image/*,text/*,.xlsx,.xls,.csv"
           />
           <input 
             ref={folderInputRef}
@@ -232,7 +236,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 }`}>
                   <div className="flex items-start gap-3 pr-12">
                     <div className="text-xl mt-0.5">
-                      {getIcon(file.type)}
+                      {getIcon(file.type, file.name)}
                     </div>
                     <div className="flex-1 overflow-hidden">
                       <p className="text-xs font-bold text-gray-700 truncate" title={file.name}>
@@ -304,6 +308,12 @@ const Sidebar: React.FC<SidebarProps> = ({
               {/* プリセット選択肢 */}
               <div className="grid grid-cols-2 gap-2">
                 {[
+                  {
+                    id: 'reviewer',
+                    label: '設計照査官',
+                    desc: '不整合・基準違反を厳格指摘',
+                    icon: 'fa-shield-halved text-indigo-600',
+                  },
                   {
                     id: 'default',
                     label: '標準',

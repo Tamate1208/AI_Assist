@@ -23,5 +23,5 @@ export interface AppState {
   isSidebarOpen: boolean;
 }
 
-export type PersonalityType = 'default' | 'friendly' | 'tutor' | 'kansai' | 'custom';
+export type PersonalityType = 'default' | 'reviewer' | 'friendly' | 'tutor' | 'kansai' | 'custom';
 
