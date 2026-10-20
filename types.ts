@@ -14,6 +14,7 @@ export interface ChatMessage {
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
+  mode?: WorkMode;
 }
 
 export interface AppState {
@@ -24,4 +25,27 @@ export interface AppState {
 }
 
 export type PersonalityType = 'default' | 'reviewer' | 'friendly' | 'tutor' | 'kansai' | 'custom';
+
+export type WorkMode = 'review' | 'office' | 'field' | 'tech' | 'general';
+
+export interface ActionPreset {
+  id: string;
+  title: string;
+  badge: string;
+  desc: string;
+  icon: string;
+  prompt: string;
+}
+
+export interface WorkModeConfig {
+  id: WorkMode;
+  label: string;
+  shortLabel: string;
+  icon: string;
+  badge: string;
+  description: string;
+  placeholder: string;
+  systemPromptAddition: string;
+  presets: ActionPreset[];
+}
 

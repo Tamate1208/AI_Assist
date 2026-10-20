@@ -33,7 +33,7 @@ const AudioController: React.FC = () => {
   const rates = [0.8, 1.0, 1.25, 1.5, 2.0];
 
   return (
-    <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-40 w-[92%] max-w-xl bg-slate-900/95 backdrop-blur-md text-white px-4 py-3 rounded-2xl shadow-2xl border border-slate-700/50 flex flex-col gap-2 animate-fade-in-up">
+    <div className="fixed bottom-16 md:bottom-6 left-1/2 -translate-x-1/2 z-30 w-[94%] max-w-xl bg-slate-900/95 dark:bg-slate-900/95 backdrop-blur-md text-white px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl shadow-2xl border border-slate-700/60 flex flex-col gap-2 animate-fade-in-up print-hide">
       <div className="flex items-center justify-between gap-3">
         {/* 左側: アイコン & タイトル */}
         <div className="flex items-center gap-3 overflow-hidden">

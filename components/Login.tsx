@@ -67,9 +67,9 @@ const Login: React.FC<LoginProps> = ({ onSuccess }) => {
           <div className="w-16 h-16 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg shadow-indigo-600/30">
             <i className="fa-solid fa-lock text-white text-2xl"></i>
           </div>
-          <h1 className="text-2xl font-bold text-white tracking-wider mb-2">AIアシスタント</h1>
+          <h1 className="text-2xl font-bold text-white tracking-wider mb-2">AI業務アシスタント</h1>
           <p className="text-xs sm:text-sm text-slate-400">
-            アクセス制限が有効です。<br className="xs:hidden" />管理パスワードを入力してください。
+            日常業務・現場管理・設計照査を強力に支援します。<br className="xs:hidden" />パスワードを入力してください。
           </p>
         </div>
 

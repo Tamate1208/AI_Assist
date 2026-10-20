@@ -97,26 +97,55 @@ async function startServer() {
         parts: [{ text: msg.content }]
       }));
 
-      const targetModel = model || "gemini-3.5-flash";
+      const targetModel = model || "gemini-2.5-flash";
 
-      const result = await ai.models.generateContentStream({
-        model: targetModel,
-        contents: [
-          ...relevantHistory,
-          {
-            role: 'user',
-            parts: [
-              ...fileParts,
-              { text: prompt }
-            ]
+      let result;
+      try {
+        result = await ai.models.generateContentStream({
+          model: targetModel,
+          contents: [
+            ...relevantHistory,
+            {
+              role: 'user',
+              parts: [
+                ...fileParts,
+                { text: prompt }
+              ]
+            }
+          ],
+          config: {
+            systemInstruction,
+            temperature: 0.7,
+            topP: 0.95,
           }
-        ],
-        config: {
-          systemInstruction,
-          temperature: 1,
-          topP: 0.95,
+        });
+      } catch (primaryErr: any) {
+        console.warn(`Primary model ${targetModel} failed:`, primaryErr?.message);
+        // Fallback to gemini-2.5-flash or gemini-1.5-flash if targetModel was not found
+        if (targetModel !== "gemini-2.5-flash") {
+          console.log("Attempting fallback with gemini-2.5-flash...");
+          result = await ai.models.generateContentStream({
+            model: "gemini-2.5-flash",
+            contents: [
+              ...relevantHistory,
+              {
+                role: 'user',
+                parts: [
+                  ...fileParts,
+                  { text: prompt }
+                ]
+              }
+            ],
+            config: {
+              systemInstruction,
+              temperature: 0.7,
+              topP: 0.95,
+            }
+          });
+        } else {
+          throw primaryErr;
         }
-      });
+      }
 
       res.setHeader('Content-Type', 'text/plain; charset=utf-8');
       res.setHeader('Cache-Control', 'no-cache');
