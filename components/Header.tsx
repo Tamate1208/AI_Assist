@@ -88,15 +88,18 @@ const Header: React.FC<HeaderProps> = ({
               value={selectedModel}
               onChange={(e) => onModelChange(e.target.value)}
               aria-label="AIモデルの選択"
-              className="text-xs bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg px-2 py-1.5 font-medium text-gray-700 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer transition-colors max-w-[130px] sm:max-w-[200px] md:max-w-none truncate"
+              className="text-xs bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg px-2 py-1.5 font-medium text-gray-700 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer transition-colors max-w-[150px] sm:max-w-[240px] md:max-w-none truncate"
             >
-              <optgroup label="⚡ 高速・標準（日常業務に推奨）">
-                <option value="gemini-2.5-flash">Gemini 2.5 Flash 【高速・標準】日常業務・議事録 ⚡</option>
-                <option value="gemini-2.0-flash">Gemini 2.0 Flash 【超低遅延】サクサク応答 🚀</option>
+              <optgroup label="🚀 最新世代・推奨（最高コスパ・高度推論）">
+                <option value="gemini-3.8-flash">Gemini 3.8 Flash 【最新・推奨】高度推論・最高コスパ 🚀</option>
+                <option value="gemini-3.5-flash">Gemini 3.5 Flash 【高速・低コスト】日常要約・簡易チェック ⚡</option>
               </optgroup>
-              <optgroup label="🧠 深層推論・高精度（照査・複雑分析）">
-                <option value="gemini-1.5-pro">Gemini 1.5 Pro 【深層思考】示方書・図面精査 🧠</option>
-                <option value="gemini-3.5-flash">Gemini 3.5 Flash (プレビュー)</option>
+              <optgroup label="🧠 最新深層推論（高難度・最終確認）">
+                <option value="gemini-3.5-pro">Gemini 3.5 Pro 【深層推論】高難度特殊構造・示方書精査 🧠</option>
+              </optgroup>
+              <optgroup label="📦 安定版">
+                <option value="gemini-2.5-flash">Gemini 2.5 Flash 【安定版】標準応答 📦</option>
+                <option value="gemini-2.5-pro">Gemini 2.5 Pro 【安定版】詳細推論 📦</option>
               </optgroup>
             </select>
           </div>

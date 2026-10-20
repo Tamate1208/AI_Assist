@@ -19,7 +19,7 @@ const App: React.FC = () => {
   const { value: storedMessages, saveValue: setStoredMessages, isOnline } = useOfflineStorage<ChatMessage[]>('app_chat_messages', []);
   const { value: workMode, saveValue: setWorkMode } = useOfflineStorage<WorkMode>('app_work_mode', 'office');
   const { value: personality, saveValue: setPersonality } = useOfflineStorage<PersonalityType>('app_personality', 'default');
-  const { value: selectedModel, saveValue: setSelectedModel } = useOfflineStorage<string>('app_selected_model', 'gemini-2.5-flash');
+  const { value: selectedModel, saveValue: setSelectedModel } = useOfflineStorage<string>('app_selected_model', 'gemini-3.8-flash');
   const { value: customInstruction, saveValue: setCustomInstruction } = useOfflineStorage<string>('app_custom_instruction', '');
 
   const [activeMobileTab, setActiveMobileTab] = useState<string>('chat');

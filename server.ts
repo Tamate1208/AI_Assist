@@ -97,7 +97,7 @@ async function startServer() {
         parts: [{ text: msg.content }]
       }));
 
-      const targetModel = model || "gemini-2.5-flash";
+      const targetModel = model || "gemini-3.8-flash";
 
       let result;
       try {
@@ -121,11 +121,12 @@ async function startServer() {
         });
       } catch (primaryErr: any) {
         console.warn(`Primary model ${targetModel} failed:`, primaryErr?.message);
-        // Fallback to gemini-2.5-flash or gemini-1.5-flash if targetModel was not found
-        if (targetModel !== "gemini-2.5-flash") {
-          console.log("Attempting fallback with gemini-2.5-flash...");
+        // Fallback to gemini-3.5-flash or gemini-2.5-flash
+        const fallbackModel = targetModel === "gemini-3.8-flash" ? "gemini-3.5-flash" : "gemini-2.5-flash";
+        console.log(`Attempting fallback with ${fallbackModel}...`);
+        try {
           result = await ai.models.generateContentStream({
-            model: "gemini-2.5-flash",
+            model: fallbackModel,
             contents: [
               ...relevantHistory,
               {
@@ -142,7 +143,8 @@ async function startServer() {
               topP: 0.95,
             }
           });
-        } else {
+        } catch (secondaryErr: any) {
+          console.warn(`Fallback model ${fallbackModel} failed:`, secondaryErr?.message);
           throw primaryErr;
         }
       }
