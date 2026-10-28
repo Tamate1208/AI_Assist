@@ -7,3 +7,5 @@ services:
     envVars:
       - key: GEMINI_API_KEY
         sync: false # Renderのダッシュボードで手動で値を入力する必要があります
+      - key: NODE_VERSION
+        value: 22.23.4
